@@ -1,0 +1,22 @@
+<animals>
+    <carnivoreAnimals>
+        <carnivoreAnimals>
+            <name>Lion</name>
+            <amount>4</amount>
+        </carnivoreAnimals>
+        <carnivoreAnimals>
+            <name>Bear</name>
+            <amount>2</amount>
+        </carnivoreAnimals>
+    </carnivoreAnimals>
+    <herbivoreAnimals>
+        <herbivoreAnimals>
+            <name>Zebra</name>
+            <amount>3</amount>
+        </herbivoreAnimals>
+        <herbivoreAnimals>
+            <name>Elephant</name>
+            <amount>2</amount>
+        </herbivoreAnimals>
+    </herbivoreAnimals>
+</animals>
