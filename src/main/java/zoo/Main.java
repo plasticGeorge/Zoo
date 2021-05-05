@@ -6,24 +6,24 @@ public class Main {
         // Create zoo
         Zoo zoo = new Zoo();
         // Add animals to the zoo
-        SourceFormat format = null;
-        String filePath = null;
-        if(argv.length != 2)
+        Formats format = Formats.JSON;
+        String source = Main.class.getClassLoader().getResource("zooAnimals.json").getPath();
+        if(argv.length > 2)
             throw new IllegalArgumentException("Invalid number of arguments");
         for(String arg : argv){
             String[] args = arg.split("=");
             switch (args[0]){
-                case "-configtype":
-                    format = SourceFormat.valueOf(args[1].toUpperCase());
+                case "-format":
+                    format = Formats.valueOf(args[1].toUpperCase());
                     break;
-                case "-configfile":
-                    filePath = args[1];
+                case "-source":
+                    source = args[1];
                     break;
                 default:
                     throw new IllegalArgumentException("You can only define \'-configtype\' or \'-configfile\'");
             }
         }
-        zoo.addAnimals(filePath, format);
+        zoo.addAnimals(source, format);
 
         // Create user action trigger
         ActionTrigger trigger = new ActionTrigger(zoo);

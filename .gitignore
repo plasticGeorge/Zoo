@@ -1,3 +1,3 @@
-/.idea
-/target
-/zoo.iml
+.idea
+target
+*iml

@@ -21,7 +21,7 @@ class ZooTest {
     static void setup() {
         zoo = new Zoo();
         String filePath = ZooTest.class.getClassLoader().getResource("zooAnimals.json").getPath();
-        zoo.addAnimals(filePath, SourceFormat.JSON);
+        zoo.addAnimals(filePath, Formats.JSON);
     }
 
     @Test
@@ -51,9 +51,9 @@ class ZooTest {
 
         Zoo testZoo = new Zoo();
         String filePath = ZooTest.class.getClassLoader().getResource("zooAnimalsTest.json").getPath();
-        testZoo.addAnimals(filePath, SourceFormat.JSON);
+        testZoo.addAnimals(filePath, Formats.JSON);
 
-        Assertions.assertEquals(testAnimals, testZoo.getZooAnimalSpecies());
+        Assertions.assertEquals(testAnimals,testZoo.getZooAnimalSpecies());
     }
 
     @Test

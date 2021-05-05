@@ -3,6 +3,16 @@ package zoo;
  * Class for describing a species of herbivore animal
  */
 public class Herbivore extends AnimalSpecies {
+    /**
+     * This constructors was created to work with databases
+     */
+    public Herbivore(){
+
+    }
+
+    public Herbivore(String name, int amount){
+        super(name, amount);
+    }
 
     /**
      * Method for updating current species state, according to zoo information about herbivore type

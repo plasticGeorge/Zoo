@@ -7,6 +7,16 @@ import lombok.Setter;
  */
 @Setter
 public class Carnivore extends AnimalSpecies {
+    /**
+     * This constructors was created to work with databases
+     */
+    public Carnivore(){
+
+    }
+
+    public Carnivore(String name, int amount){
+        super(name, amount);
+    }
 
     /**
      * Method for updating current species state, according to zoo information about carnivore type

@@ -3,6 +3,8 @@ package zoo;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Entity;
+
 /**
  * Class for concrete animal species
  */
@@ -27,6 +29,15 @@ abstract class AnimalSpecies implements EventHandler {
      * Defines a species default state to CALM
      */
     public AnimalSpecies() {
+        currentState = AnimalState.CALM;
+    }
+
+    /**
+     * This constructor was created to work with databases
+     */
+    public AnimalSpecies(String name, int amount) {
+        this.name = name;
+        this.amount = amount;
         currentState = AnimalState.CALM;
     }
 

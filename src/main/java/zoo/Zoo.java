@@ -2,6 +2,11 @@ package zoo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import org.hibernate.Session;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,13 +49,16 @@ public class Zoo {
         allHerbivoreState = AnimalState.CALM;
     }
 
-    public void addAnimals(String filePath, SourceFormat format){
+    public void addAnimals(String source, Formats format){
         switch (format){
             case JSON:
-                addAnimalsFromJson(filePath);
+                addAnimalsFromJson(source);
                 break;
             case XML:
-                addAnimalsFromXml(filePath);
+                addAnimalsFromXml(source);
+                break;
+            case DATABASE:
+                addAnimalsFromDB(source);
                 break;
             default:
                 throw new IllegalArgumentException("Incorrect parsing format");
@@ -90,6 +98,31 @@ public class Zoo {
         } catch (IOException e) {
             System.out.println(e.toString());
             throw new IllegalStateException("File hasn't been parsed");
+        }
+    }
+
+    /**
+     * Method for adding animals to the zoo from the specified XML file
+     *
+     * @param connectionFilePath path to Database configuration file
+     */
+    public void addAnimalsFromDB(String connectionFilePath) {
+        Session session = null;
+        try {
+            Configuration configuration = new Configuration().configure(new File(connectionFilePath));
+            configuration.addAnnotatedClass(ZooDBModel.class);
+            StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
+            session = configuration.buildSessionFactory(builder.build()).openSession();
+            zooAnimalSpecies.addAll(session.createQuery("select new zoo.Carnivore(name, amount) from ZooDBModel where type like 'carnivore'").list());
+            zooAnimalSpecies.addAll(session.createQuery("select new zoo.Herbivore(name, amount) from ZooDBModel where type like 'herbivore'").list());
+        }
+        catch (Exception e){
+            System.out.println(e.toString());
+            throw new IllegalStateException("Failed to connect to database");
+        }
+        finally {
+            if(session != null)
+                session.close();
         }
     }
 
