@@ -12,16 +12,20 @@ public class Main {
             throw new IllegalArgumentException("Invalid number of arguments");
         for(String arg : argv){
             String[] args = arg.split("=");
-            switch (args[0]){
-                case "-format":
-                    format = Formats.valueOf(args[1].toUpperCase());
-                    break;
-                case "-source":
-                    source = args[1];
-                    break;
-                default:
-                    throw new IllegalArgumentException("You can only define \'-configtype\' or \'-configfile\'");
+            if (args.length != 2) {
+                switch (args[0]) {
+                    case "-format":
+                        format = Formats.valueOf(args[1].toUpperCase());
+                        break;
+                    case "-source":
+                        source = args[1];
+                        break;
+                    default:
+                        throw new IllegalArgumentException("You can only define \'-configtype\' or \'-configfile\'");
+                }
             }
+            else
+                throw new IllegalArgumentException("Invalid state of \'" + args[0] + "\' argument...");
         }
         zoo.addAnimals(source, format);
 

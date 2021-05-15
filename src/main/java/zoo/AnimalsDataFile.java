@@ -5,8 +5,8 @@ import lombok.Getter;
 import java.util.List;
 
 /**
- * Class for JSON deserialization.
- * JSON contains information about animals of each type
+ * Class for JSON and XML deserialization.
+ * JSON or XML contains information about animals of each type
  */
 @Getter
 public class AnimalsDataFile {
