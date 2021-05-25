@@ -77,4 +77,20 @@ public class ActionTriggerTest {
         assertEquals(zoo.getAllHerbivoreState(), AnimalState.MAKE_NOISE);
         assertEquals(zoo.getAllCarnivoreState(), AnimalState.MAKE_NOISE);
     }
+
+    //new
+    @Test
+    void setDrinking() {
+        trigger.feedAnimals(carnivore);
+        assertEquals(zoo.getAllCarnivoreState(), AnimalState.CALM);
+        trigger.feedAnimals(herbivore);
+        assertEquals(zoo.getAllHerbivoreState(), AnimalState.CALM);
+    }
+
+    //new
+    @Test
+    void setRain() {
+        trigger.setRain();
+        assertEquals(zoo.getAllCarnivoreState(), AnimalState.MAKE_NOISE);
+    }
 }

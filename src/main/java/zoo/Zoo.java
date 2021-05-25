@@ -3,15 +3,15 @@ package zoo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import org.hibernate.Session;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
-
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -107,22 +107,33 @@ public class Zoo {
      * @param connectionFilePath path to Database configuration file
      */
     public void addAnimalsFromDB(String connectionFilePath) {
-        Session session = null;
+        ArrayList<String> connectionData = new ArrayList<>(3);
         try {
-            Configuration configuration = new Configuration().configure(new File(connectionFilePath));
-            configuration.addAnnotatedClass(ZooDBModel.class);
-            StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
-            session = configuration.buildSessionFactory(builder.build()).openSession();
-            zooAnimalSpecies.addAll(session.createQuery("select new zoo.Carnivore(name, amount) from ZooDBModel where type like 'carnivore'").list());
-            zooAnimalSpecies.addAll(session.createQuery("select new zoo.Herbivore(name, amount) from ZooDBModel where type like 'herbivore'").list());
-        }
-        catch (Exception e){
-            System.out.println(e.toString());
-            throw new IllegalStateException("Failed to connect to database");
-        }
-        finally {
-            if(session != null)
-                session.close();
+            Files.lines(Paths.get(connectionFilePath)).forEach(connectionData::add);
+            try(Connection connection = DriverManager.getConnection(connectionData.get(0),
+                                                                connectionData.get(1),
+                                                                connectionData.get(2))) {
+                LinkedList<Carnivore> carnivores = new LinkedList<>();
+                LinkedList<Herbivore> herbivores = new LinkedList<>();
+                try(Statement statement = connection.createStatement()) {
+                    statement.execute("SELECT * FROM zoo WHERE type = 'carnivore'");
+                    try(ResultSet result = statement.getResultSet()) {
+                        while (result.next())
+                            carnivores.add(new Carnivore(result.getString(3), result.getInt(4)));
+                    }
+                    statement.execute("SELECT * FROM zoo WHERE type = 'herbivore'");
+                    try(ResultSet result = statement.getResultSet()) {
+                        while (result.next())
+                            herbivores.add(new Herbivore(result.getString(3), result.getInt(4)));
+                    }
+                    if(!carnivores.isEmpty())
+                        zooAnimalSpecies.addAll(carnivores);
+                    if(!herbivores.isEmpty())
+                        zooAnimalSpecies.addAll(herbivores);
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -133,7 +144,6 @@ public class Zoo {
      * @param animalType type of animals for event
      */
     public void performAction(Events event, AnimalType animalType) {
-        updateAllSpeciesCurrentStates();
         switch (animalType) {
             case CARNIVORE:
                 for(AnimalSpecies species : zooAnimalSpecies) {

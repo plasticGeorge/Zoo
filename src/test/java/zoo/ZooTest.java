@@ -2,6 +2,7 @@ package zoo;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
@@ -17,7 +18,7 @@ class ZooTest {
     private AnimalType carnivore = AnimalType.CARNIVORE;
     private AnimalType herbivore = AnimalType.HERBIVORE;
 
-    @BeforeAll
+    @BeforeEach
     static void setup() {
         zoo = new Zoo();
         String filePath = ZooTest.class.getClassLoader().getResource("zooAnimals.json").getPath();
@@ -49,11 +50,17 @@ class ZooTest {
         testAnimals.add(cow);
         testAnimals.add(koala);
 
-        Zoo testZoo = new Zoo();
-        String filePath = ZooTest.class.getClassLoader().getResource("zooAnimalsTest.json").getPath();
-        testZoo.addAnimals(filePath, Formats.JSON);
+        Zoo testJsonZoo = new Zoo();
+        Zoo testXmlZoo = new Zoo();
 
-        Assertions.assertEquals(testAnimals,testZoo.getZooAnimalSpecies());
+        String jsonFilePath = ZooTest.class.getClassLoader().getResource("zooAnimalsTest.json").getPath();
+        String xmlFilePath = ZooTest.class.getClassLoader().getResource("zooAnimalsTest.xml").getPath();
+
+        testJsonZoo.addAnimals(jsonFilePath, Formats.JSON);
+        testXmlZoo.addAnimals(xmlFilePath, Formats.XML);
+
+        Assertions.assertEquals(testAnimals,testJsonZoo.getZooAnimalSpecies());
+        Assertions.assertEquals(testAnimals,testXmlZoo.getZooAnimalSpecies());
     }
 
     @Test
@@ -70,6 +77,16 @@ class ZooTest {
         assertEquals(AnimalState.CALM, zoo.getAllCarnivoreState());
 
         zoo.performAction(Events.FEEDING, herbivore);
+        assertEquals(AnimalState.CALM, zoo.getAllHerbivoreState());
+
+        zoo.performAction(Events.KEEPER_VISIT, herbivore);
+        assertEquals(AnimalState.MAKE_NOISE, zoo.getAllHerbivoreState());
+        assertEquals(AnimalState.MAKE_NOISE, zoo.getAllCarnivoreState());
+
+        zoo.performAction(Events.DRINKING, carnivore);
+        assertEquals(AnimalState.CALM, zoo.getAllCarnivoreState());
+
+        zoo.performAction(Events.DRINKING, herbivore);
         assertEquals(AnimalState.CALM, zoo.getAllHerbivoreState());
     }
 
@@ -90,6 +107,14 @@ class ZooTest {
             zoo.performAction(Events.THUNDER);
             assertEquals(AnimalState.MAKE_NOISE, zoo.getAllCarnivoreState());
             assertEquals(AnimalState.MAKE_NOISE, zoo.getAllHerbivoreState());
+
+            //To calm the animals
+            zoo.performAction(Events.DRINKING, carnivore);
+            zoo.performAction(Events.DRINKING, herbivore);
+
+            zoo.performAction(Events.RAIN);
+            assertEquals(AnimalState.MAKE_NOISE, zoo.getAllCarnivoreState());
+            assertEquals(AnimalState.CALM, zoo.getAllHerbivoreState());
         }
 
         if(zoo.getAllCarnivoreState().equals(AnimalState.MAKE_NOISE) ||

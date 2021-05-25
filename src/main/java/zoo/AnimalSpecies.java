@@ -3,8 +3,6 @@ package zoo;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-
 /**
  * Class for concrete animal species
  */
@@ -52,7 +50,7 @@ abstract class AnimalSpecies implements EventHandler {
     abstract public void feeding();
 
     /**
-     * Defines a behavior on "feeding a species" event
+     * Defines a behavior on "drinking a species" event
      */
     abstract public void drinking();
 
@@ -72,7 +70,7 @@ abstract class AnimalSpecies implements EventHandler {
     abstract public void thunder();
 
     /**
-     * Defines a behavior on "thunder strike" event
+     * Defines a behavior on "rain" event
      */
     abstract public void rain();
 

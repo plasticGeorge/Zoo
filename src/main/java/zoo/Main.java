@@ -12,7 +12,7 @@ public class Main {
             throw new IllegalArgumentException("Invalid number of arguments");
         for(String arg : argv){
             String[] args = arg.split("=");
-            if (args.length != 2) {
+            if (args.length == 2) {
                 switch (args[0]) {
                     case "-format":
                         format = Formats.valueOf(args[1].toUpperCase());
